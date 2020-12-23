@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphic_band_names/src/models/band_model.dart';
 
@@ -34,10 +37,70 @@ class _HomePageState extends State<HomePage> {
               _buildListTile(bands[index])),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: addNewBand,
         elevation: 2,
       ),
     );
+  }
+
+  void addNewBand() {
+    final _textController = TextEditingController();
+
+    if (Platform.isAndroid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('New band name:'),
+              content: TextField(
+                controller: _textController,
+              ),
+              actions: [
+                MaterialButton(
+                    child: Text('Add'),
+                    elevation: 5,
+                    textColor: Colors.blue,
+                    onPressed: () => addBandList(_textController.text)
+                )
+              ],
+            );
+          }
+      );
+    } else {
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text('New band name:'),
+              content: CupertinoTextField(
+                controller: _textController,
+              ),
+              actions: [
+                CupertinoDialogAction(
+                  isDestructiveAction: false,
+                    child: Text('Cancel'),
+                    onPressed: () => Navigator.pop(context)
+                ),
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                    child: Text('Add'),
+                    onPressed: () => addBandList(_textController.text)
+                ),
+              ],
+            );
+          }
+      );
+    }
+  }
+
+  void addBandList(String name) {
+    if (name.length > 1) {
+      // se agrega la banda a la lista/back y lo que sea
+      BandModel model = BandModel(id: DateTime.now().toString(), name: name, votes: 3);
+      this.bands.add(model);
+      setState(() {});
+    }
+    Navigator.pop(context);
   }
 
   ListTile _buildListTile(BandModel band) {
