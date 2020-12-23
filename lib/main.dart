@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:graphic_band_names/src/pages/home.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,16 +10,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text('PON_AQUI_EL_TITULO'),
-          ),
-          body: Center(
-            child: Container(
-              child: Text('PON_AQUI_CUALQUIER_COSA'),
-            ),
-          ),
-        )
+        initialRoute: HomePage.routeName,
+        routes: {
+          HomePage.routeName: (BuildContext context) => HomePage()
+        },
     );
   }
 }
