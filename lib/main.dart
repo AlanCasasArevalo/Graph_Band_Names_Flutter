@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-          initialRoute: StatusPage.routeName,
+          initialRoute: HomePage.routeName,
           routes: {
             HomePage.routeName: (BuildContext context) => HomePage(),
             StatusPage.routeName: (BuildContext context) => StatusPage()
