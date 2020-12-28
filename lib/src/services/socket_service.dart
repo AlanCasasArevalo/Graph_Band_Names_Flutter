@@ -27,6 +27,11 @@ class SocketService with ChangeNotifier {
       notifyListeners();
     });
 
+    socket.on('new_message', (payload) => {
+      print('nombre: ${payload.containsKey('name') ? payload['name'] : ''}'),
+      print('message: ${payload.containsKey('message') ? payload['message'] : ''}')
+    });
+
     socket.onDisconnect((_) {
       print('disconnect');
       this._serverStatus = ServerStatus.Offline;
