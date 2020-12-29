@@ -169,8 +169,7 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       onDismissed: (direction) {
-        // TODO: Realizar la logica de borrado de la banda
-        print(direction);
+        _socketService.socket.emit('delete_band', {'id': band.id});
       },
     );
   }
