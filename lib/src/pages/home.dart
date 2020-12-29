@@ -28,10 +28,9 @@ class _HomePageState extends State<HomePage> {
     final _socketService = Provider.of<SocketService>(context, listen: false);
 
     _socketService.socket.on('active_bands', (payload) {
-      this.bands = (payload as List).map((band) => BandModel.fromMap(band)).toList();
-    });
-    setState(() {
-
+      this.bands =
+          (payload as List).map((band) => BandModel.fromMap(band)).toList();
+      setState(() {});
     });
     super.initState();
   }
@@ -40,8 +39,8 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     final _socketService = Provider.of<SocketService>(context, listen: false);
     _socketService.socket.off('active_bands');
-    _socketService.socket.dispose();
-    _socketService.socket.disconnect();
+    // _socketService.socket.dispose();
+    // _socketService.socket.disconnect();
     super.dispose();
   }
 
@@ -53,10 +52,9 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         actions: [
           Container(
-            margin: EdgeInsets.only(right: 10),
-            // child: Icon(Icons.check_circle, color: Colors.green,),
-            child: _getIcon(_socketService.serverStatus)
-          )
+              margin: EdgeInsets.only(right: 10),
+              // child: Icon(Icons.check_circle, color: Colors.green,),
+              child: _getIcon(_socketService.serverStatus))
         ],
         title: Text(
           'Bands',
@@ -78,7 +76,10 @@ class _HomePageState extends State<HomePage> {
 
   Icon _getIcon(ServerStatus status) {
     if (status == ServerStatus.Online) {
-      return Icon(Icons.check_circle, color: Colors.green,);
+      return Icon(
+        Icons.check_circle,
+        color: Colors.green,
+      );
     } else if (status == ServerStatus.Offline) {
       return Icon(
         Icons.offline_bolt,
@@ -149,6 +150,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Dismissible _buildListTile(BandModel band) {
+    final _socketService = Provider.of<SocketService>(context, listen: false);
     return Dismissible(
       key: Key(band.id),
       direction: DismissDirection.startToEnd,
@@ -172,7 +174,8 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(fontSize: 20),
         ),
         onTap: () {
-          print(band);
+          print(band.id);
+          _socketService.socket.emit('vote_band', {'id': band.id});
         },
       ),
       onDismissed: (direction) {
