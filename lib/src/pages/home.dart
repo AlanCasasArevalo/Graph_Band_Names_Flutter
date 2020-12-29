@@ -19,13 +19,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     final _socketService = Provider.of<SocketService>(context, listen: false);
-
-    _socketService.socket.on('active_bands', (payload) {
-      this.bands =
-          (payload as List).map((band) => BandModel.fromMap(band)).toList();
-      setState(() {});
-    });
+    _socketService.socket.on('active_bands', _handleActiveBands);
     super.initState();
+  }
+
+  _handleActiveBands (dynamic payload) {
+    this.bands =
+        (payload as List).map((band) => BandModel.fromMap(band)).toList();
+    setState(() {});
   }
 
   @override
