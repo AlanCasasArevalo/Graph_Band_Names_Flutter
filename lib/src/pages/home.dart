@@ -15,13 +15,35 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<BandModel> bands = [
-    BandModel(id: '1', name: 'Metallica', votes: 3),
-    BandModel(id: '2', name: 'Queen', votes: 3),
-    BandModel(id: '3', name: 'Extremo duro', votes: 3),
-    BandModel(id: '4', name: 'Estopa', votes: 3),
-    BandModel(id: '5', name: 'Marea', votes: 10),
-    BandModel(id: '6', name: 'Pink!', votes: 3),
+    // BandModel(id: '1', name: 'Metallica', votes: 3),
+    // BandModel(id: '2', name: 'Queen', votes: 3),
+    // BandModel(id: '3', name: 'Extremo duro', votes: 3),
+    // BandModel(id: '4', name: 'Estopa', votes: 3),
+    // BandModel(id: '5', name: 'Marea', votes: 10),
+    // BandModel(id: '6', name: 'Pink!', votes: 3),
   ];
+
+  @override
+  void initState() {
+    final _socketService = Provider.of<SocketService>(context, listen: false);
+
+    _socketService.socket.on('active_bands', (payload) {
+      this.bands = (payload as List).map((band) => BandModel.fromMap(band)).toList();
+    });
+    setState(() {
+
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    final _socketService = Provider.of<SocketService>(context, listen: false);
+    _socketService.socket.off('active_bands');
+    _socketService.socket.dispose();
+    _socketService.socket.disconnect();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
