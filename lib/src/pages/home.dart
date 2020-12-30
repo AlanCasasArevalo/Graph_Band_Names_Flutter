@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphic_band_names/src/models/band_model.dart';
 import 'package:graphic_band_names/src/services/socket_service.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -56,10 +57,17 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Colors.white,
       ),
-      body: ListView.builder(
-          itemCount: bands.length,
-          itemBuilder: (BuildContext context, int index) =>
-              _buildListTile(bands[index])),
+      body: Column(
+        children: [
+          _showGraphic(),
+          Expanded(
+            child: ListView.builder(
+                itemCount: bands.length,
+                itemBuilder: (BuildContext context, int index) =>
+                    _buildListTile(bands[index])),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: addNewBand,
@@ -173,5 +181,51 @@ class _HomePageState extends State<HomePage> {
         _socketService.socket.emit('delete_band', {'id': band.id});
       },
     );
+  }
+
+  Widget _showGraphic() {
+
+    Map<String, double> dataMap = Map();
+    bands.forEach((band) {
+      dataMap.putIfAbsent(band.name, () => band.votes.toDouble());
+    });
+
+    final colorList = [
+      Colors.blue,
+      Colors.blueAccent,
+      Colors.yellow,
+      Colors.grey,
+      Colors.amber
+    ];
+
+    return Container(
+      width: double.infinity,
+        height: 200,
+        child: PieChart(
+          dataMap: dataMap,
+          animationDuration: Duration(milliseconds: 800),
+          chartLegendSpacing: 32,
+          chartRadius: MediaQuery.of(context).size.width / 2.5,
+          colorList: colorList,
+          initialAngleInDegree: 0,
+          chartType: ChartType.disc,
+          ringStrokeWidth: 32,
+          // centerText: 'Bands',
+          legendOptions: LegendOptions(
+            showLegendsInRow: false,
+            legendPosition: LegendPosition.right,
+            showLegends: true,
+            legendTextStyle: TextStyle(
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          chartValuesOptions: ChartValuesOptions(
+            showChartValueBackground: true,
+            showChartValues: true,
+            showChartValuesInPercentage: false,
+            showChartValuesOutside: false,
+          ),
+        )
+    ) ;
   }
 }
